@@ -1,12 +1,17 @@
 package ru.pfur.as.ui;
 
 import lombok.extern.slf4j.Slf4j;
+import ru.pfur.as.dxf.DXFBuilder;
+import ru.pfur.as.dxf.DXFBuilderException;
+import ru.pfur.as.dxf.DXFLine;
 import ru.pfur.as.util.MathUtils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 
 @Slf4j
@@ -45,6 +50,7 @@ public class MainFrame extends JFrame implements DrawInterface {
     private JTextField valueFinalBF;
     private JTextField valueFinalTF;
     private JButton draw;
+    private JButton export;
 
     private DrawPanel drawPanel;
     private boolean isDraw = false;
@@ -65,7 +71,7 @@ public class MainFrame extends JFrame implements DrawInterface {
         add(getLeftPanel(), BorderLayout.WEST);
         drawPanel = getRightPanel();
         add(drawPanel, BorderLayout.CENTER);
-        propertyDialog = new PropertyDialog(this, "Parameters", drawPanel);
+        propertyDialog = new PropertyDialog(frame, "Parameters", drawPanel);
 //        setResizable(false);
     }
 
@@ -97,7 +103,7 @@ public class MainFrame extends JFrame implements DrawInterface {
 
 
         JButton preCalculateButton = new JButton("Pre calculation");
-        preCalculateButton.setPreferredSize(new Dimension(150, 36));
+        preCalculateButton.setPreferredSize(new Dimension(120, 36));
         preCalculateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
 
@@ -109,6 +115,7 @@ public class MainFrame extends JFrame implements DrawInterface {
 
                 calculate.setEnabled(false);
                 draw.setEnabled(false);
+                export.setEnabled(false);
                 preCalculation();
             }
         });
@@ -125,25 +132,56 @@ public class MainFrame extends JFrame implements DrawInterface {
 
 
         draw = new JButton("Draw");
-        draw.setEnabled(true);
+        draw.setEnabled(false);
         draw.setPreferredSize(new Dimension(60, 36));
         draw.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 draw();
+                export.setEnabled(true);
             }
         });
 
+        export = new JButton("Export to DXF");
+        export.setEnabled(true);
+        export.setPreferredSize(new Dimension(120, 36));
+        export.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent actionEvent) {
+                export();
+            }
+        });
 
         JPanel buttons = new JPanel(new FlowLayout(0, 2, 2));
 
         buttons.add(preCalculateButton);
         buttons.add(calculate);
         buttons.add(draw);
+        buttons.add(export);
         buttons.add(getPropertyButton());
 
         left.add(buttons, BorderLayout.SOUTH);
 
         return left;
+    }
+
+    private void export() {
+
+        try {
+            DXFBuilder dxfBuilder = new DXFBuilder();
+            dxfBuilder.add(new DXFLine(0.0, 0.0, 50.0, 50.0));
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Specify a file to save");
+            int userSelection = fileChooser.showSaveDialog(this);
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+                dxfBuilder.build(fileToSave);
+                JOptionPane.showMessageDialog(frame, "File save successfully", "Success", JOptionPane
+                        .INFORMATION_MESSAGE);
+            }
+        } catch (DXFBuilderException e) {
+            JOptionPane.showMessageDialog(frame, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException e) {
+            JOptionPane.showMessageDialog(frame, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     private Component getPropertyButton() {
@@ -320,7 +358,6 @@ public class MainFrame extends JFrame implements DrawInterface {
 
                 log.debug("Bf (in) = " + inputFinalBf);
 
-
                 if (inputFinalBf != null && !inputFinalBf.isEmpty()) {
 
                     finalBf = Double.parseDouble(String.valueOf(inputFinalBf));
@@ -350,7 +387,6 @@ public class MainFrame extends JFrame implements DrawInterface {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e.getLocalizedMessage());
-
         }
     }
 
@@ -431,12 +467,10 @@ public class MainFrame extends JFrame implements DrawInterface {
         double Fcr = 0;
         if (λ <= λp) {                             //the flange is compact. The limit state of yielding will control, and Fcr = Fy, resulting in: Mn = Rpg Fy Sxc
             Fcr = fy;
-
         }
 
         if (λp < λ && λ <= λr) {                     //the flange is noncompact. Inelastic FLB will control, and Fcr = fy - 0.3...
             Fcr = fy - 0.3 * fy * (λ - λp) / (λr - λp);
-
         }
 
         if (λ > λr) {                            //the flange is slender, elastic FLB will control, and
@@ -621,7 +655,7 @@ public class MainFrame extends JFrame implements DrawInterface {
         String tfFraction = fraction[0] + "/" + fraction[1];
 
         //2/5x62web & 11/2x8flanges,
-        return twFraction + "x" + hw + "web and " + tfFraction + "x" + bf + "flanges";
+        return twFraction + "xStart" + hw + "web and " + tfFraction + "xStart" + bf + "flanges";
     }
 
     private JLabel getName(String name) {

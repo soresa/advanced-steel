@@ -156,7 +156,7 @@ public class DrawPanel extends JPanel {
         // start draw tw
 
         graph.drawLine(points.get("p3").x, points.get("p31").y + 100, points.get("p31").x + dinc, points.get("p31").y + 100);
-//        graph.drawLine(points.get("p3").x, points.get("p3").y + 100, points.get("p3").x - dinc, points.get("p3").y + 100);
+//        graph.drawLine(points.get("p3").xStart, points.get("p3").yStart + 100, points.get("p3").xStart - dinc, points.get("p3").yStart + 100);
 
         String tw = String.valueOf(drawInterface.getTw());
 
@@ -167,7 +167,7 @@ public class DrawPanel extends JPanel {
         // start draw hw
 
         graph.drawLine(points.get("p2").x + dinc * 2, points.get("p2").y, points.get("p2").x + dinc * 2, points.get("p5").y);
-//        graph.drawLine(points.get("p3").x, points.get("p3").y + 100, points.get("p3").x - dinc, points.get("p3").y + 100);
+//        graph.drawLine(points.get("p3").xStart, points.get("p3").yStart + 100, points.get("p3").xStart - dinc, points.get("p3").yStart + 100);
 
         String hw = String.valueOf(drawInterface.getHw());
 

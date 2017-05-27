@@ -16,8 +16,10 @@ public class PropertyDialog extends JDialog {
         super(frame, s);
         this.drawPanel = panel;
         this.setDefaultCloseOperation(HIDE_ON_CLOSE);
-        this.setSize(500, 500);
-        this.setPreferredSize(new Dimension(300, 200));
+        this.setSize(430, 180);
+        this.setPreferredSize(new Dimension(430, 180));
+        this.setLocationRelativeTo(null);
+        this.setResizable(false);
         this.setLayout(new FlowLayout());
 
         initElement();
@@ -34,9 +36,7 @@ public class PropertyDialog extends JDialog {
 
     private Component getColorLinePanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panel.setPreferredSize(new Dimension(490, 40));
-
-
+        panel.setPreferredSize(new Dimension(420, 40));
         final JLabel label = new JLabel("Color Line");
         label.setPreferredSize(new Dimension(150, 30));
         panel.add(label);
@@ -46,6 +46,7 @@ public class PropertyDialog extends JDialog {
         c.setBackground(lineColor);
         panel.add(c);
         JButton colorButton = new JButton("Choose color");
+        setPreferredSize(colorButton);
         panel.add(colorButton);
         colorButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
@@ -58,20 +59,29 @@ public class PropertyDialog extends JDialog {
         return panel;
     }
 
+    private void setPreferredSize(JButton colorButton) {
+        colorButton.setPreferredSize(new Dimension(140, 33));
+    }
+
     private Component getThicknessPanel() {
 
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panel.setPreferredSize(new Dimension(490, 40));
+        panel.setPreferredSize(new Dimension(420, 40));
 
         final JLabel label = new JLabel("Line thickness");
         label.setPreferredSize(new Dimension(150, 30));
         panel.add(label);
-        final JTextField c = new JTextField(thickness);
+
+        final JTextField c = new JTextField();
         c.setPreferredSize(new Dimension(100, 30));
         c.setEditable(true);
         c.setText(String.valueOf(thickness));
+
         panel.add(c);
         JButton colorButton = new JButton("Save thickness");
+
+        setPreferredSize(colorButton);
+
         panel.add(colorButton);
         colorButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
@@ -85,18 +95,21 @@ public class PropertyDialog extends JDialog {
 
     private Component getColorPanel() {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        panel.setPreferredSize(new Dimension(490, 40));
+        panel.setPreferredSize(new Dimension(420, 40));
 
 
         final JLabel label = new JLabel("Color background");
         label.setPreferredSize(new Dimension(150, 30));
         panel.add(label);
+
         final JTextField c = new JTextField();
         c.setPreferredSize(new Dimension(100, 30));
         c.setEditable(false);
         c.setBackground(back);
+
         panel.add(c);
         JButton colorButton = new JButton("Choose color");
+        setPreferredSize(colorButton);
         panel.add(colorButton);
         colorButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
