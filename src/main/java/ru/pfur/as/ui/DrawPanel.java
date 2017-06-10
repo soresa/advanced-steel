@@ -4,8 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 public class DrawPanel extends JPanel {
@@ -22,7 +20,6 @@ public class DrawPanel extends JPanel {
     Color axisColor = new Color(0f, 0f, 0f, 0.5f);
     Color main = new Color(0f, 0f, 0f, 0.8f); //rgb = red, green, blue + alpha
     Color dimensionMain = new Color(0.05f, 0.05f, 0.05f, 0.5f); //rgb = red, green, blue + alpha
-    private Map<String, Point> points = new HashMap<String, Point>();
     private int dinc = 25;
     private int xd = 5;
     private int tx = 20;
@@ -78,37 +75,23 @@ public class DrawPanel extends JPanel {
             int drawhw = (int) (hw * 30);
             int drawh = (int) (h * 30);
 
+            PointCalculator.calculate(x0, y0, bound, getWidth(), getHeight(), drawtw, drawtf);
 
             // find points
-            Point p1 = new Point(x0 - getWidth() / 2 + bound, y0 - getHeight() / 2 + bound);
-            Point p2 = new Point(x0 - getWidth() / 2 + bound, y0 - (getHeight() / 2 - drawtf) + bound);
-//                    -100, 0 + 50 + drawtf);
-            Point p3 = new Point(x0 - drawtw / 2, y0 - (getHeight() / 2 - drawtf) + bound);
-            Point p4 = new Point(x0 - drawtw / 2, y0 + (getHeight() / 2 - drawtf) - bound);
-            Point p5 = new Point(x0 - getWidth() / 2 + bound, y0 + (getHeight() / 2 - drawtf) - bound);
-            Point p6 = new Point(x0 - getWidth() / 2 + bound, y0 + getHeight() / 2 - bound);
+            Point p1 = PointCalculator.points.get("p1");
+            Point p2 = PointCalculator.points.get("p2");
+            Point p3 = PointCalculator.points.get("p3");
+            Point p4 = PointCalculator.points.get("p4");
+            Point p5 = PointCalculator.points.get("p5");
+            Point p6 = PointCalculator.points.get("p6");
 
-            Point p61 = new Point(x0 + getWidth() / 2 - bound, y0 + getHeight() / 2 - bound);
-            Point p51 = new Point(x0 + getWidth() / 2 - bound, y0 + (getHeight() / 2 - drawtf) - bound);
-            Point p41 = new Point(x0 + drawtw / 2, y0 + (getHeight() / 2 - drawtf) - bound);
+            Point p61 = PointCalculator.points.get("p61");
+            Point p51 = PointCalculator.points.get("p51");
+            Point p41 = PointCalculator.points.get("p41");
 
-            Point p31 = new Point(x0 + drawtw / 2, y0 - (getHeight() / 2 - drawtf) + bound);
-            Point p21 = new Point(x0 + getWidth() / 2 - bound, y0 - (getHeight() / 2 - drawtf) + bound);
-            Point p11 = new Point(x0 + getWidth() / 2 - bound, y0 - getHeight() / 2 + bound);
-
-            points.put("p1", p1);
-            points.put("p2", p2);
-            points.put("p3", p3);
-            points.put("p4", p4);
-            points.put("p5", p5);
-            points.put("p6", p6);
-            points.put("p61", p61);
-            points.put("p51", p51);
-            points.put("p41", p41);
-            points.put("p31", p31);
-            points.put("p21", p21);
-            points.put("p11", p11);
-
+            Point p31 = PointCalculator.points.get("p31");
+            Point p21 = PointCalculator.points.get("p21");
+            Point p11 = PointCalculator.points.get("p11");
 
             graph.setStroke(new BasicStroke(PropertyDialog.thickness));
 
@@ -130,7 +113,6 @@ public class DrawPanel extends JPanel {
                 drawDimensions(graph);
             }
 
-
         }
 
     }
@@ -141,67 +123,67 @@ public class DrawPanel extends JPanel {
 
         // start draw tf
 
-        graph.drawLine(points.get("p1").x, points.get("p1").y, points.get("p1").x - dinc, points.get("p1").y);
-        graph.drawLine(points.get("p2").x, points.get("p2").y, points.get("p2").x - dinc, points.get("p2").y);
-        graph.drawLine(points.get("p1").x - dinc + xd, points.get("p1").y - xd, points.get("p2").x - dinc + xd, points.get("p2").y + xd);
+        graph.drawLine(PointCalculator.points.get("p1").x, PointCalculator.points.get("p1").y, PointCalculator.points.get("p1").x - dinc, PointCalculator.points.get("p1").y);
+        graph.drawLine(PointCalculator.points.get("p2").x, PointCalculator.points.get("p2").y, PointCalculator.points.get("p2").x - dinc, PointCalculator.points.get("p2").y);
+        graph.drawLine(PointCalculator.points.get("p1").x - dinc + xd, PointCalculator.points.get("p1").y - xd, PointCalculator.points.get("p2").x - dinc + xd, PointCalculator.points.get("p2").y + xd);
 
         String tf = String.valueOf(drawInterface.getTf());
 
-        int d = (points.get("p2").y - points.get("p1").y) / 2 - 5;
+        int d = (PointCalculator.points.get("p2").y - PointCalculator.points.get("p1").y) / 2 - 5;
 
-        graph.drawString(tf, points.get("p1").x - dinc - tx, points.get("p2").y - d);
+        graph.drawString(tf, PointCalculator.points.get("p1").x - dinc - tx, PointCalculator.points.get("p2").y - d);
 
         // end draw tf
 
         // start draw tw
 
-        graph.drawLine(points.get("p3").x, points.get("p31").y + 100, points.get("p31").x + dinc, points.get("p31").y + 100);
-//        graph.drawLine(points.get("p3").xStart, points.get("p3").yStart + 100, points.get("p3").xStart - dinc, points.get("p3").yStart + 100);
+        graph.drawLine(PointCalculator.points.get("p3").x, PointCalculator.points.get("p31").y + 100, PointCalculator.points.get("p31").x + dinc, PointCalculator.points.get("p31").y + 100);
+//        graph.drawLine(PointCalculator.points.get("p3").xStart, PointCalculator.points.get("p3").yStart + 100, PointCalculator.points.get("p3").xStart - dinc, PointCalculator.points.get("p3").yStart + 100);
 
         String tw = String.valueOf(drawInterface.getTw());
 
-        graph.drawString(tw, points.get("p31").x + dinc + 2, points.get("p31").y + 100 + 5);
+        graph.drawString(tw, PointCalculator.points.get("p31").x + dinc + 2, PointCalculator.points.get("p31").y + 100 + 5);
 
         // end draw tw
 
         // start draw hw
 
-        graph.drawLine(points.get("p2").x + dinc * 2, points.get("p2").y, points.get("p2").x + dinc * 2, points.get("p5").y);
-//        graph.drawLine(points.get("p3").xStart, points.get("p3").yStart + 100, points.get("p3").xStart - dinc, points.get("p3").yStart + 100);
+        graph.drawLine(PointCalculator.points.get("p2").x + dinc * 2, PointCalculator.points.get("p2").y, PointCalculator.points.get("p2").x + dinc * 2, PointCalculator.points.get("p5").y);
+//        graph.drawLine(PointCalculator.points.get("p3").xStart, PointCalculator.points.get("p3").yStart + 100, PointCalculator.points.get("p3").xStart - dinc, PointCalculator.points.get("p3").yStart + 100);
 
         String hw = String.valueOf(drawInterface.getHw());
 
-        int hwc = (points.get("p5").y - points.get("p2").y) / 2;
+        int hwc = (PointCalculator.points.get("p5").y - PointCalculator.points.get("p2").y) / 2;
 
-        graph.drawString(hw, points.get("p2").x + dinc * 2 + 2, points.get("p2").y + hwc);
+        graph.drawString(hw, PointCalculator.points.get("p2").x + dinc * 2 + 2, PointCalculator.points.get("p2").y + hwc);
 
         // end draw hw
 
         // start draw bf
 
-        graph.drawLine(points.get("p6").x, points.get("p6").y, points.get("p6").x, points.get("p6").y + dinc);
-        graph.drawLine(points.get("p61").x, points.get("p61").y, points.get("p61").x, points.get("p61").y + dinc);
-        graph.drawLine(points.get("p6").x - xd, points.get("p6").y + dinc - xd, points.get("p61").x + xd, points.get("p61").y + dinc - xd);
+        graph.drawLine(PointCalculator.points.get("p6").x, PointCalculator.points.get("p6").y, PointCalculator.points.get("p6").x, PointCalculator.points.get("p6").y + dinc);
+        graph.drawLine(PointCalculator.points.get("p61").x, PointCalculator.points.get("p61").y, PointCalculator.points.get("p61").x, PointCalculator.points.get("p61").y + dinc);
+        graph.drawLine(PointCalculator.points.get("p6").x - xd, PointCalculator.points.get("p6").y + dinc - xd, PointCalculator.points.get("p61").x + xd, PointCalculator.points.get("p61").y + dinc - xd);
 
         String bf = String.valueOf(drawInterface.getBf());
 
-        int bfc = (points.get("p61").x - points.get("p6").x) / 2;
+        int bfc = (PointCalculator.points.get("p61").x - PointCalculator.points.get("p6").x) / 2;
 
-        graph.drawString(bf, points.get("p6").x + bfc, points.get("p6").y + dinc + 10);
+        graph.drawString(bf, PointCalculator.points.get("p6").x + bfc, PointCalculator.points.get("p6").y + dinc + 10);
 
         // end draw bf
 
         // start draw H
 
-        graph.drawLine(points.get("p11").x, points.get("p11").y, points.get("p11").x + dinc, points.get("p11").y);
-        graph.drawLine(points.get("p61").x, points.get("p61").y, points.get("p61").x + dinc, points.get("p61").y);
-        graph.drawLine(points.get("p11").x + dinc - xd, points.get("p11").y - xd, points.get("p61").x + dinc - xd, points.get("p61").y + xd);
+        graph.drawLine(PointCalculator.points.get("p11").x, PointCalculator.points.get("p11").y, PointCalculator.points.get("p11").x + dinc, PointCalculator.points.get("p11").y);
+        graph.drawLine(PointCalculator.points.get("p61").x, PointCalculator.points.get("p61").y, PointCalculator.points.get("p61").x + dinc, PointCalculator.points.get("p61").y);
+        graph.drawLine(PointCalculator.points.get("p11").x + dinc - xd, PointCalculator.points.get("p11").y - xd, PointCalculator.points.get("p61").x + dinc - xd, PointCalculator.points.get("p61").y + xd);
 
         String h = String.valueOf(drawInterface.getH());
 
-        int hc = (points.get("p61").y - points.get("p11").y) / 2;
+        int hc = (PointCalculator.points.get("p61").y - PointCalculator.points.get("p11").y) / 2;
 
-        graph.drawString(h, points.get("p11").x, points.get("p11").y + hc);
+        graph.drawString(h, PointCalculator.points.get("p11").x, PointCalculator.points.get("p11").y + hc);
 
         // end draw H
 

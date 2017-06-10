@@ -22,7 +22,10 @@ public class MathUtils {
         log.debug("H = " + H);
         if (H < max) H = max;
         log.debug("H = " + H);
-        return MathUtils.roundUp(H);
+
+        double Hresult = MathUtils.roundUp(H);
+        log.debug("H result = " + Hresult);
+        return Hresult;
     }
 
     public static int[] toFractionPos(BigDecimal x) {
@@ -36,6 +39,15 @@ public class MathUtils {
         int gcd = BigInteger.valueOf(num).gcd(BigInteger.valueOf(den)).intValue();
         int[] rf = {num / gcd, den / gcd};
         return rf;
+    }
+
+    public static void main(String[] args) {
+        double a = 73.0;
+        double b = 69.5;
+
+        System.out.println(Math.round(a / 10) * 10);
+
+        System.out.println(roundUp(a));
     }
 
 

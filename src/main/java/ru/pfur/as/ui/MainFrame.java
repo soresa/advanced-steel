@@ -1,5 +1,6 @@
 package ru.pfur.as.ui;
 
+import javafx.geometry.Point2D;
 import lombok.extern.slf4j.Slf4j;
 import ru.pfur.as.dxf.DXFBuilder;
 import ru.pfur.as.dxf.DXFBuilderException;
@@ -167,12 +168,14 @@ public class MainFrame extends JFrame implements DrawInterface {
 
         try {
             DXFBuilder dxfBuilder = new DXFBuilder();
-            dxfBuilder.add(new DXFLine(0.0, 0.0, 50.0, 50.0));
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setDialogTitle("Specify a file to save");
             int userSelection = fileChooser.showSaveDialog(this);
             if (userSelection == JFileChooser.APPROVE_OPTION) {
                 File fileToSave = fileChooser.getSelectedFile();
+
+                buildDxf(dxfBuilder);
+
                 dxfBuilder.build(fileToSave);
                 JOptionPane.showMessageDialog(frame, "File save successfully", "Success", JOptionPane
                         .INFORMATION_MESSAGE);
@@ -182,6 +185,39 @@ public class MainFrame extends JFrame implements DrawInterface {
         } catch (IOException e) {
             JOptionPane.showMessageDialog(frame, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
+
+    private void buildDxf(DXFBuilder dxfBuilder) throws DXFBuilderException {
+
+        PointCalculator.calculate2D(0.0, 0.0, 0.0, 100.0, 100.0, trytw, finalTf);
+
+        Point2D p1 = PointCalculator.points2D.get("p1");
+        Point2D p2 = PointCalculator.points2D.get("p2");
+        Point2D p3 = PointCalculator.points2D.get("p3");
+        Point2D p4 = PointCalculator.points2D.get("p4");
+        Point2D p5 = PointCalculator.points2D.get("p5");
+        Point2D p6 = PointCalculator.points2D.get("p6");
+
+        Point2D p61 = PointCalculator.points2D.get("p61");
+        Point2D p51 = PointCalculator.points2D.get("p51");
+        Point2D p41 = PointCalculator.points2D.get("p41");
+
+        Point2D p31 = PointCalculator.points2D.get("p31");
+        Point2D p21 = PointCalculator.points2D.get("p21");
+        Point2D p11 = PointCalculator.points2D.get("p11");
+
+        dxfBuilder.add(new DXFLine(p1.getX(), p1.getY(), p2.getX(), p2.getY()));
+        dxfBuilder.add(new DXFLine(p2.getX(), p2.getY(), p3.getX(), p3.getY()));
+        dxfBuilder.add(new DXFLine(p3.getX(), p3.getY(), p4.getX(), p4.getY()));
+        dxfBuilder.add(new DXFLine(p4.getX(), p4.getY(), p5.getX(), p5.getY()));
+        dxfBuilder.add(new DXFLine(p5.getX(), p5.getY(), p6.getX(), p6.getY()));
+        dxfBuilder.add(new DXFLine(p6.getX(), p6.getY(), p61.getX(), p61.getY()));
+        dxfBuilder.add(new DXFLine(p61.getX(), p61.getY(), p51.getX(), p51.getY()));
+        dxfBuilder.add(new DXFLine(p51.getX(), p51.getY(), p41.getX(), p41.getY()));
+        dxfBuilder.add(new DXFLine(p41.getX(), p41.getY(), p31.getX(), p31.getY()));
+        dxfBuilder.add(new DXFLine(p31.getX(), p31.getY(), p21.getX(), p21.getY()));
+        dxfBuilder.add(new DXFLine(p21.getX(), p21.getY(), p11.getX(), p11.getY()));
+        dxfBuilder.add(new DXFLine(p11.getX(), p11.getY(), p1.getX(), p1.getY()));
     }
 
     private Component getPropertyButton() {
@@ -655,7 +691,7 @@ public class MainFrame extends JFrame implements DrawInterface {
         String tfFraction = fraction[0] + "/" + fraction[1];
 
         //2/5x62web & 11/2x8flanges,
-        return twFraction + "xStart" + hw + "web and " + tfFraction + "xStart" + bf + "flanges";
+        return twFraction + "x" + hw + "web and " + tfFraction + "x" + bf + "flanges";
     }
 
     private JLabel getName(String name) {
